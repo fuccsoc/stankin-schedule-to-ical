@@ -35,7 +35,8 @@ async function main() {
           end,
           summary:
             pair.subject +
-            (pair.group === "Без подгруппы" ? "" : ` ${pair.group}`),
+            (pair.group === "Без подгруппы" ? "" : ` ${pair.group}`) +
+            ` (${pair.type})`,
           location: pair.audience,
           description: `${pair.teacher}`,
         });
