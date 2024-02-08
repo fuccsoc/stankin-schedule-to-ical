@@ -6,6 +6,32 @@ async function main() {
   const cal = ical({ name: "Stankin" });
   const data = await parse("file.pdf");
   for (const pair of data) {
+    for (const date of pair.dates) {
+      const startDate = new Date(
+        new Date().getFullYear(),
+        parseInt(date.split(".")[1]) - 1,
+        parseInt(date.split(".")[0]),
+        parseInt(pair.start_time.split(":")[0]),
+        parseInt(pair.start_time.split(":")[1])
+      );
+      const endDate = new Date(
+        new Date().getFullYear(),
+        parseInt(date.split(".")[1]) - 1,
+        parseInt(date.split(".")[0]),
+        parseInt(pair.end_time.split(":")[0]),
+        parseInt(pair.end_time.split(":")[1])
+      );
+      cal.createEvent({
+        start: startDate,
+        end: endDate,
+        summary:
+          pair.subject +
+          (pair.group === "Без подгруппы" ? "" : ` ${pair.group}`) +
+          ` (${pair.type})`,
+        location: pair.audience,
+        description: `${pair.teacher}`,
+      });
+    }
     for (const period of pair.periods) {
       const startDate = new Date(
         new Date().getFullYear(),
@@ -31,8 +57,8 @@ async function main() {
           new Date(day).setHours(endDate.getHours(), endDate.getMinutes())
         );
         cal.createEvent({
-          start,
-          end,
+          start: start,
+          end: end,
           summary:
             pair.subject +
             (pair.group === "Без подгруппы" ? "" : ` ${pair.group}`) +
